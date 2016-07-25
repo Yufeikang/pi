@@ -5,9 +5,9 @@
 #ifndef PI_AM2301_H
 #define PI_AM2301_H
 
-#define AM2301_STATUS_OK 0;
-#define AM2301_STATUS_ERR 1;
-#define AM2301_STATUS_NODATA 2;
+#define AM2301_STATUS_OK 1
+#define AM2301_STATUS_ERR 2
+#define AM2301_STATUS_NODATA 3
 
 typedef struct _am2301_data_t{
     float temperature;

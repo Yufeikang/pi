@@ -22,14 +22,13 @@ static PyObject *Init(PyObject *self, PyObject *args){
 static PyObject *GetAM2301Data(PyObject *self, PyObject *args)
 {
     if(g_isInited!=IS_INITED){
-      //  return NULL;
-	return Py_BuildValue("ffs",0.0,0.0,"Not Inited");
+        return NULL;
     }
 
     am2301_data_t data;
     data = get_am2301_data();
 
-    return Py_BuildValue("ffy#",data.humidity,data.temperature,data.status,strlen(data.status));
+    return Py_BuildValue("ffi",data.humidity,data.temperature,data.status);
 }
 
 static PyObject *LcdShow(PyObject *self,PyObject *args){

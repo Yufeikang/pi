@@ -9,10 +9,9 @@
 #include <wiringPi.h>
 #include <zconf.h>
 #include <time.h>
-
 // GPIO pin for input and output, GPIO24
 // note that physical connector pin number is different
-static int am2301_gpio = 24;
+static int am2301_gpio = 5;
 
 // if no data, loop max count and exit
 #define MAX_LOOP_COUNT 10000
@@ -52,6 +51,7 @@ int wait_for_gpio(int state)
 
 am2301_data_t get_am2301_data()
 {
+
     am2301_data_t am2301_data;
     memset(&am2301_data,0, sizeof(am2301_data));
     int i, res;
@@ -60,7 +60,7 @@ am2301_data_t get_am2301_data()
     int data[5];
     int humidity,temperature;
 
-    time_t start, stop;
+    struct timespec  start, stop;
     int nodata_error = 0; // 1 if no data from AM2301
 
     pinMode(am2301_gpio, OUTPUT);
@@ -93,11 +93,11 @@ am2301_data_t get_am2301_data()
 
         // now measure length of high state in nanoseconds
 
-        start = time(NULL);
+        clock_gettime(CLOCK_REALTIME, &start);
         wait_for_gpio(LOW);
-        stop = time(NULL);
-        res = (int)(stop - start);
-
+        clock_gettime(CLOCK_REALTIME, &stop);
+        res = (int)(stop.tv_nsec -start.tv_nsec);
+	
         // 1st data bit is shorter, why ?
 
         if ((i==0 && res > 29000) || ( i!=0 && res > 40000)) {
@@ -118,7 +118,7 @@ am2301_data_t get_am2301_data()
     pinMode(am2301_gpio, OUTPUT);
 
     if (((data[0] + data[1] + data[2] + data[3]) & 0xff) == data[4]) {
-        am2301_data.status=AM2301_STATUS_OK
+        am2301_data.status=AM2301_STATUS_OK;
     } else  {
         am2301_data.status=AM2301_STATUS_ERR;
     }
@@ -133,11 +133,12 @@ am2301_data_t get_am2301_data()
         data[2] = data[2] & 0x7f;
         temperature  = (data[2]<<8) + data[3];
         am2301_data.humidity= (float) (humidity / 10.0);
-        am2301_data.temperature= (float) (temperature / 10.0);
+        am2301_data.temperature= -(float) (temperature / 10.0);
     } else {
         temperature = (data[2]<<8) + data[3];
         am2301_data.humidity= (float) (humidity / 10.0);
         am2301_data.temperature= (float) (temperature / 10.0);
+	
     }
 
     return am2301_data;

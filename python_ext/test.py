@@ -7,6 +7,8 @@ else:
 	print("Init ERR!")
 humidity,temp,status= s.GetAM2301Data()
 
-print("humidity:%f" & humidity)
+print("humidity:%f" % humidity)
+print("temperature:%f" % temp)
+print("status:%f" % status)
 
 
