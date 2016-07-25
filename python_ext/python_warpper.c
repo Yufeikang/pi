@@ -31,12 +31,25 @@ static PyObject *GetAM2301Data(PyObject *self, PyObject *args)
     return Py_BuildValue("ffi",data.humidity,data.temperature,data.status);
 }
 
+static PyObject *LcdSendCmd(PyObject *self,PyObject *args){
+   if(g_isInited!=IS_INITED){
+	return NULL;
+    }
+   unsigned char cmd;
+   if(!PyArg_ParseTuple(args,"b",&cmd)){
+	return NULL;
+   }
+   write_com(cmd);
+   return Py_BuildValue("i",0);
+}
+
 static PyObject *LcdShow(PyObject *self,PyObject *args){
     if(g_isInited!=IS_INITED){
         return NULL;
     }
     char *data=NULL;
-    if (!PyArg_ParseTuple(args, "s", data)) {
+    Py_ssize_t len;
+    if (!PyArg_ParseTuple(args, "y#", &data,&len)) {
         return NULL;
     }
     lcd_show(data);
@@ -47,6 +60,7 @@ static PyObject *LcdShow(PyObject *self,PyObject *args){
 static PyMethodDef SampleMethods[] = {
         {"Init",  Init, METH_VARARGS, "native init Gpio"},
         {"GetAM2301Data", GetAM2301Data, METH_VARARGS, "GetAM2301Data "},
+        {"LcdSendCmd", LcdSendCmd, METH_VARARGS, "LcdShow data"},
         {"LcdShow", LcdShow, METH_VARARGS, "LcdShow data"},
         { NULL, NULL, 0, NULL}
 };
