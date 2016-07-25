@@ -29,7 +29,7 @@ static PyObject *GetAM2301Data(PyObject *self, PyObject *args)
     am2301_data_t data;
     data = get_am2301_data();
 
-    return Py_BuildValue("ffs",data.humidity,data.temperature,data.status);
+    return Py_BuildValue("ffy#",data.humidity,data.temperature,data.status,strlen(data.status));
 }
 
 static PyObject *LcdShow(PyObject *self,PyObject *args){
