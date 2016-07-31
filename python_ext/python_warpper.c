@@ -4,7 +4,7 @@
 
 #include "python_warpper.h"
 #include <wiringPi.h>
-
+#include "rx433m.h"
 #define IS_INITED 0
 #define ISNOT_INIT 1
 static int g_isInited=ISNOT_INIT;
@@ -15,6 +15,7 @@ static PyObject *Init(PyObject *self, PyObject *args){
 
     wiringPiSetup();
     lcdinit();
+    rx433_init();
     g_isInited=IS_INITED;
     return Py_BuildValue("i",0);
 }
