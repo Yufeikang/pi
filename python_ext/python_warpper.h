@@ -8,4 +8,5 @@
 #include <Python.h>
 #include "qc12864b.h"
 #include "am2301.h"
+#include "gpio.h"
 #endif //PI_PYTHON_WARPPER_H
