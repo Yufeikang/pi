@@ -11,7 +11,7 @@ print("humidity:%f" % humidity)
 print("temperature:%f" % temp)
 print("status:%f" % status)
 s.GPIOSetMode(7,"OUTPUT".encode("ascii"))
-s.GPIOSetPullUpDn(7,"PUD_DOWN".encode("ascii"))
+s.GPIOSetPullUpDn(7,"PUD_OFF".encode("ascii"))
 s.GPIODWrite(7,0)
 lcdOn=True
 while True:
@@ -28,9 +28,12 @@ while True:
         time_str=time.strftime("%A %H:%M")
         s.LcdShow(time_str.encode("gbk"))
     time.sleep(2)
-    if 23>time.localtime().tm_hour>=9 and lcdOn==False:
+    hour = time.localtime().tm_hour
+    if hour>=9 and hour<23:# and lcdOn==False:
         s.GPIODWrite(7,0)
         lcdOn=True
-    elif 0<=time.localtime().tm_hour<9 and lcdOn==True:
+        print("lcd on")
+    elif hour>=0 and hour<9:# and lcdOn==True:
         s.GPIODWrite(7,1)
         lcdOn=False
+        print("lcd off")
